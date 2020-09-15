@@ -1,0 +1,56 @@
+import cv2,numpy as np
+
+img=cv2.VideoCapture('C:\\Users\\user\\Videos\\12345.mp4')
+
+width = int(img.get(cv2.CAP_PROP_FRAME_WIDTH))#影片寬
+height = int(img.get(cv2.CAP_PROP_FRAME_HEIGHT))#影片高
+fps = float(img.get(5))#一秒幾禎
+fourcc = cv2.VideoWriter_fourcc(*'MJPG')#編碼
+out = cv2.VideoWriter('output5.avi', fourcc, fps, (width, height))#若輸出灰階圖，需設置第5參數isColor = False
+
+
+
+
+lower_red = np.array([156,43,46]);lower_red2 = np.array([0,43,46])#HSV空間的紅色色相(H)為156~10度，這裡分開取156~180和0~10度
+upper_red = np.array([180, 255, 255]);upper_red2 = np.array([10, 255, 255])
+
+ 
+
+while(img.isOpened()):
+    ret, frame = img.read()#讀禎
+
+    if ret == True:#如果成功讀禎
+        
+        roi=frame[319:319+592,194:194+418]#設置ROI感興趣區域(截圖)為roi
+        temple=frame[319:319+592,194:194+418]#複製roi為temple
+        ret,roi=cv2.threshold(roi, 35, 255, cv2.THRESH_BINARY)#第2參數為閥值，若(B,G,R)中任一通道小於閥值，將該通道設值0，反之設為第三參數。僅限cv2.THRESH_BINARY用於彩色圖片
+        roi = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)#將roi轉換為HSV色彩空間
+        hsc_red1 =cv2.inRange(roi,lower_red,upper_red)#二值化，將H,S,V值為第2至第3參數內的像素設為白色，反之為黑
+        hsc_red2=cv2.inRange(roi,lower_red2,upper_red2)#同上
+        roi = cv2.add(hsc_red1,hsc_red2)#將上方經過二值化的圖相加
+        roi=cv2.GaussianBlur(roi,(11,11),0)#高斯模糊，去除雜質
+        roi=cv2.Canny(roi,20,160)#邊緣檢測，畫邊緣，
+        contours, hierarchy = cv2.findContours(roi,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)#尋找roi內的輪廓
+        cv2.drawContours(temple,contours,-1,(255,255,0),2)#將輪廓畫在先前複製的temple(彩色)上，因roi已經過二值化，無法再轉成彩色，所以roi的目的只為了找輪廓
+
+        for c in contours:#走訪所有輪廓
+            M = cv2.moments(c)#返回輪廓的矩，我不知道這是什麼東西不要問我，總之可以用裡面的東西算中心點座標
+            if M['m10'] and M['m01'] and M['m00'] != 0:
+                cX = int(M['m10'] / M['m00'])#中心點x座標
+                cY = int(M['m01'] / M['m00'])#中心點y座標
+                cv2.circle(temple, (cX, cY), 2, (1, 227, 254), -1)#繪製中心點
+                cv2.putText(temple, str(cX)+','+str(cY),(cX, cY+5),cv2.FONT_HERSHEY_SIMPLEX,0.5,(0, 255, 255))#顯示中心點座標
+
+        
+        frame[319:319+592,194:194+418]=temple#將處理好的temple貼回原本的圖片，座標需要一模一樣
+        
+        out.write(frame)#儲存
+        cv2.imshow('frame',frame)
+        
+        if  cv2.waitKey(1) == ord('q'):#處理過程中若要終止可按q
+            break
+    if cv2.waitKey(1) == ord('q'):#處理完後關閉視窗可按q
+        break
+
+img.release()
+cv2.destroyAllWindows()
