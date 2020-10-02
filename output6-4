@@ -83,7 +83,7 @@ while(img.isOpened()):
         kernel = np.ones((11, 11), np.uint8)
         erosion = cv2.erode(roi, kernel, iterations = 1)
         #roi=cv2.Canny(roi,20,160)#邊緣檢測，畫邊緣
-        contours, hierarchy = cv2.findContours(roi,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)#尋找roi內的輪廓，將所有輪廓傳回第一個回傳值contours(陣列)
+        contours, hierarchy = cv2.findContours(roi,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)#尋找roi內的輪廓，將所有輪廓傳回第一個回傳值contours(集合)
 
         for c in contours:#走訪所有輪廓
             M = cv2.moments(c)#返回輪廓的矩，我不知道這是什麼，總之可以用裡面的東西算中心點座標
