@@ -12,6 +12,7 @@ try:
               while True:
                     ret,frame=img.read()
                     cv2.imshow('123',frame)
+                    #演算法
                     if (cv2.waitKey(1) & 0xFF==ord('q')) or ser.inWaiting()!=0:
                           ser.flushOutput()
                           ser.close()
