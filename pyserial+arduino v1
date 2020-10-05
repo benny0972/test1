@@ -1,0 +1,40 @@
+#------------------python-----------------------
+import cv2,serial  # 引用pySerial模組
+COM_PORT = 'COM3'    # 指定通訊埠名稱
+BAUD_RATES = 19200   # 設定傳輸速率
+ser = serial.Serial(COM_PORT, BAUD_RATES)   # 初始化序列通訊埠
+img = cv2.VideoCapture(0)
+a=0
+
+try:
+    while True:
+        if ser.readline():
+              while True:
+                    ret,frame=img.read()
+                    cv2.imshow('123',frame)
+                    if (cv2.waitKey(1) & 0xFF==ord('q')) or ser.inWaiting()!=0:
+                          ser.flushOutput()
+                          ser.close()
+                          a=1
+                          break
+        if a==1:
+            break
+    img.release()
+    cv2.destroyAllWindows()
+      
+
+except KeyboardInterrupt:
+    ser.close()    # 清除序列通訊物件
+    print('再見！')
+    
+#-------------------arduino--------------------------
+void setup() {
+  Serial.begin(19200);
+  pinMode(7,INPUT);
+}
+void loop() {
+  if (digitalRead(7)==1) {
+    Serial.println(1);
+    delay(1000);
+  }
+}
