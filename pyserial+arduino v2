@@ -1,3 +1,4 @@
+#-------------------python--------------------------
 import cv2,serial
 COM_PORT = 'COM3'
 BAUD_RATES = 19200  
@@ -41,3 +42,15 @@ try:
 except KeyboardInterrupt:
     ser.close()    # 清除序列通訊物件
     print('再見！')
+
+#-------------------arduino--------------------------
+void setup() {
+  Serial.begin(19200);
+  pinMode(7,INPUT);
+}
+void loop() {
+  if (digitalRead(7)==1) {
+    Serial.println(1);
+    delay(1000);
+  }
+}
