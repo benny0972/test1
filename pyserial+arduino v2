@@ -22,6 +22,7 @@ try:
               ser.readline()
               while True:
                     ret,frame=img.read()
+                    #演算法
                     cv2.imshow('123',frame)
                     output.write(frame)
                     if (cv2.waitKey(1) & 0xFF==ord('q')) or ser.inWaiting()!=0:
