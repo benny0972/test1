@@ -1,0 +1,42 @@
+import cv2,serial
+COM_PORT = 'COM3'
+BAUD_RATES = 19200  
+ser = serial.Serial(COM_PORT, BAUD_RATES)
+
+img = cv2.VideoCapture(0)
+width=int(img.get(cv2.CAP_PROP_FRAME_WIDTH))
+height=int(img.get(cv2.CAP_PROP_FRAME_HEIGHT))
+fps=float(img.get(5))#30
+fourcc=cv2.VideoWriter_fourcc(*'MJPG')
+output=cv2.VideoWriter('test1.avi',fourcc,fps,(width,height))
+
+
+
+a=0 #判斷是否接收第二訊號(目前預設為按第二次按鈕)
+
+try:
+    while True:
+        ret,frame=img.read()
+        cv2.imshow('123',frame)
+        if ser.inWaiting()!=0:
+              ser.readline()
+              while True:
+                    ret,frame=img.read()
+                    cv2.imshow('123',frame)
+                    output.write(frame)
+                    if (cv2.waitKey(1) & 0xFF==ord('q')) or ser.inWaiting()!=0:
+                          ser.flushOutput()
+                          ser.close()
+                          a=1
+                          break
+        if cv2.waitKey(1) & 0xFF==ord('q'):
+            break
+        if a==1:
+            break
+    img.release()
+    cv2.destroyAllWindows()
+      
+
+except KeyboardInterrupt:
+    ser.close()    # 清除序列通訊物件
+    print('再見！')
