@@ -1,0 +1,48 @@
+import cv2,numpy as np
+
+in_name='2.avi'
+out_name='3.mkv'
+
+img=cv2.VideoCapture('C:\\Users\\user\\Videos\\'+in_name)
+width = int(img.get(cv2.CAP_PROP_FRAME_WIDTH))
+height = int(img.get(cv2.CAP_PROP_FRAME_HEIGHT))
+fps = float(img.get(5))
+fourcc = cv2.VideoWriter_fourcc(*'MJPG')
+out = cv2.VideoWriter('C:\\Users\\user\\Videos\\'+out_name, fourcc, fps, (width, height))
+
+
+def left(img):
+      num=0
+      while(img.isOpened()):
+            num+=1
+            ret,frame=img.read()
+            cop=frame.copy()
+            cv2.putText(cop,str(num),(0,30),cv2.FONT_HERSHEY_SIMPLEX,0.5,(0, 255, 255))
+            cv2.imshow('123',cop)
+            if cv2.waitKey(5000) == ord('q'):
+                  break
+      while True:
+            ret,frame=img.read()
+            if ret==True:
+                  out.write(frame)
+            else:
+                  break
+def right(img):
+      num=0
+      while(img.isOpened()):
+            num+=1
+            ret,frame=img.read()
+            if ret==False:
+                  break
+            cop=frame.copy()
+            cv2.putText(cop,str(num),(0,30),cv2.FONT_HERSHEY_SIMPLEX,0.5,(0, 255, 255))
+            out.write(cop)
+            cv2.imshow('123',cop)
+            if cv2.waitKey(5000) == ord('q'):
+                  break
+#left(img)
+right(img)
+                  
+print('done!')
+cv2.destroyAllWindows()
+img.release()
