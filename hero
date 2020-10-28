@@ -1,0 +1,43 @@
+In=list(map(int,input().split()))
+Map=[]
+left=[[0 for i in range(In[1])] for j in range(In[0])]
+right=[[0 for i in range(In[1])] for j in range(In[0])]
+dp=[[0 for i in range(In[1])] for j in range(In[0])]
+
+for i in range(In[0]):
+      Map.append(list(map(int,input().split())))
+      current1=Map[i][0];current2=Map[i][In[1]-1]
+      left[i][0]=Map[i][0]
+      right[i][In[1]-1]=Map[i][In[1]-1]
+      if i!=0:
+            start1=dp[i-1][0];start2=dp[i][In[1]-1]
+            left[i][0]+=dp[i-1][0]
+            right[i][In[1]-1]+=dp[i-1][In[1]-1]
+      for j in range(1,In[1]):
+            if i==0:
+                  current1=max(Map[i][j],current1+Map[i][j])
+                  left[i][j]=current1
+                  current2=max(Map[i][In[1]-1-j],current2+Map[i][In[1]-1-j])
+                  right[i][In[1]-1-j]=current2
+            else:
+                  if Map[i][j]+Map[i-1][j]>current1+start1+Map[i][j]:
+                        current1=Map[i][j]
+                        start1=Map[i-1][j]
+                        left[i][j]=current1+start1
+                  else:
+                        current1+=Map[i][j]
+                        left[i][j]=current1+start1
+                  if Map[i][In[1]-1-j]+Map[i-1][In[1]-1-j]>current2+start2+Map[i][In[1]-1-j]:
+                        current2=Map[i][In[1]-1-j]
+                        start2=Map[i-1][In[1]-1-j]
+                        right[i][In[1]-1-j]=current2+start2
+                  else:
+                        current2+=Map[i][In[1]-1-j]
+                        right[i][In[1]-1-j]=current2+start2
+      for k in range(In[1]):
+            dp[i][k]=max(left[i][k],right[i][k])
+print(max(dp[In[0]-1]))
+
+                               
+                                                        
+
