@@ -20,16 +20,16 @@ for i in range(In[0]):
                   current2=max(Map[i][In[1]-1-j],current2+Map[i][In[1]-1-j])
                   right[i][In[1]-1-j]=current2
             else:
-                  if Map[i][j]+Map[i-1][j]>current1+start1+Map[i][j]:
+                  if Map[i][j]+dp[i-1][j]>current1+start1+Map[i][j]:
                         current1=Map[i][j]
-                        start1=Map[i-1][j]
+                        start1=dp[i-1][j]
                         left[i][j]=current1+start1
                   else:
                         current1+=Map[i][j]
                         left[i][j]=current1+start1
-                  if Map[i][In[1]-1-j]+Map[i-1][In[1]-1-j]>current2+start2+Map[i][In[1]-1-j]:
+                  if Map[i][In[1]-1-j]+dp[i-1][In[1]-1-j]>current2+start2+Map[i][In[1]-1-j]:
                         current2=Map[i][In[1]-1-j]
-                        start2=Map[i-1][In[1]-1-j]
+                        start2=dp[i-1][In[1]-1-j]
                         right[i][In[1]-1-j]=current2+start2
                   else:
                         current2+=Map[i][In[1]-1-j]
