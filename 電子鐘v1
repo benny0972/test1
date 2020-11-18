@@ -1,0 +1,182 @@
+#define data 2
+#define one 3
+#define two 4
+#define three 5
+#define four 6
+#define big 7
+#define push 8
+#define setbutton 9
+#define downbutton 10
+#define button 11
+#define delay_time 5
+int nowtime;
+unsigned long times=0;
+unsigned long sys_seconds=0;
+unsigned long doset=0;
+byte settimel[2];
+byte a=0,b=1;
+byte seconds,minute=0,hour=0;
+byte countdown=9;
+byte nowset=2;
+boolean datainput[10][7]={{0,1,1,1,1,1,1},
+                          {0,0,0,0,1,1,0},
+                          {1,0,1,1,0,1,1},
+                          {1,0,0,1,1,1,1},
+                          {1,1,0,0,1,1,0},
+                          {1,1,0,1,1,0,1},
+                          {1,1,1,1,1,0,1},
+                          {0,0,0,0,1,1,1},
+                          {1,1,1,1,1,1,1},
+                          {1,1,0,0,1,1,1}};
+void setup() {
+  for (byte i=0;i<9;i++){
+    pinMode(i,OUTPUT);
+  }
+  pinMode(setbutton,INPUT);
+  pinMode(downbutton,INPUT);
+  pinMode(button,INPUT);
+}
+void loop() {
+  times=millis();
+  sys_seconds=times/1000;
+  seconds=(sys_seconds-doset)%60;
+  
+  if (seconds==0 and b==0){
+    minute++;
+    b=1;
+  }
+  else if (seconds>0){
+    b=0;
+  }
+  if (minute>59){
+    minute=0;
+    hour++;
+  }
+  if (hour>23){
+    hour=0;
+  } 
+  if (digitalRead(button)==1 and a==0){
+    nowtime=sys_seconds;
+    countdown=sys_seconds-nowtime;
+  }
+  if (countdown<9 and a==0){
+    countdown=sys_seconds-nowtime;
+    showtime(hour,minute);
+  }
+  if (digitalRead(setbutton)==1 and a==0){
+    settimel[0]=hour;settimel[1]=minute;
+    a=1;
+    delay(300);
+  }
+  if (a==1){
+    settime();
+  }
+}
+
+void rr(byte x){
+  digitalWrite(big,0);
+  for(byte j=0;j<7;j++){
+    digitalWrite(push,0);
+    digitalWrite(data,datainput[x][j]);
+    digitalWrite(push,1);
+  }
+  digitalWrite(big,1);
+  delay(delay_time);
+  dark();
+}
+void showtime(byte c_hour,byte c_minute){
+  byte c_time[4]={c_hour/10,c_hour-c_hour/10*10,c_minute/10,c_minute-c_minute/10*10},r=4;
+  for (byte i=0;i<4;i++){
+    r--;
+    byte seg[4]={1,1,1,1};
+    seg[i]=0;
+    for (byte z=3;z<7;z++){
+      digitalWrite(z,seg[z-3]);
+    }
+    if (r==1){
+      digitalWrite(big,0);
+      dot();
+    }
+    rr(c_time[r]);
+  }
+}
+
+void dark(){
+  digitalWrite(big,0);
+  for(byte j=0;j<8;j++){
+    digitalWrite(push,0);
+    digitalWrite(data,0);
+    digitalWrite(push,1);
+  }
+  digitalWrite(big,1);
+}
+
+void settime(){
+  showsettime(settimel[0],settimel[1]);
+  if (digitalRead(setbutton)==1){
+    delay(300);
+    nowset--;
+    if (nowset==0){
+      hour=settimel[0];minute=settimel[1];
+      nowset=2;
+      settimel[0]=hour;settimel[1]=minute;
+      nowtime=sys_seconds;
+      countdown=0;
+      a=0;
+      b=1;
+      doset=sys_seconds;
+      }
+  }
+  if (digitalRead(button)==1){
+    delay(300);
+    if (nowset==2 and settimel[nowset-1]==59){
+      settimel[nowset-1]=0;
+    }
+    else if (nowset==1 and settimel[nowset-1]==23){
+      settimel[nowset-1]=0;
+    } 
+    else{
+    settimel[nowset-1]++;  
+    }
+  }
+  if (digitalRead(downbutton)==1){
+    delay(300);
+    if (nowset==2 and settimel[nowset-1]==0){
+      settimel[nowset-1]=59;
+    }
+    else if (nowset==1 and settimel[nowset-1]==0){
+      settimel[nowset-1]=23;
+    }
+    else{
+      settimel[nowset-1]--;
+    }
+  } 
+}
+
+  
+void showsettime(byte sethour,byte setmin){
+  byte st[]={sethour/10,sethour-sethour/10*10,setmin/10,setmin-setmin/10*10},r=4;
+  for (byte i=0;i<4;i++){
+    r--;
+    byte seg[4]={1,1,1,1};
+    seg[i]=0;
+    for (byte z=3;z<7;z++){
+      digitalWrite(z,seg[z-3]);
+    }
+    if (nowset==2 and r>1){
+      digitalWrite(big,0);
+      dot();
+    }
+    else if (nowset==1 and r<2){
+      digitalWrite(big,0);
+      dot();
+    }
+    rr(st[r]);
+  }
+}
+
+void dot(){
+  digitalWrite(push,0);
+  digitalWrite(data,1);
+  digitalWrite(push,1);
+}
