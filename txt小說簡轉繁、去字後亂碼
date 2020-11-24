@@ -1,0 +1,39 @@
+from opencc import  OpenCC
+cc=OpenCC('s2twp')
+c=open('C:\\Users\\user\\Desktop\\class.txt','a',encoding="utf-8")
+for x in range(4,11):
+    c.write('第'+str(x)+'章')
+    a=open(str('C:\\Users\\user\\Desktop\\'+str(x)+'.txt'),'r',encoding="utf-8")
+    n=0
+    while 1:
+        n+=1
+        b=a.readline()
+        if b=='':
+            break
+        if b[0]=='‘':
+            try:
+                d=cc.convert(b[:b.index('’')+1])
+                d=d[:len(d)+1]
+                c.write(d+'\n'+'\n')
+            except:
+                for j in range(len(b)-1,-1,-1):
+                    if ('\u4e00'<=b[j] and b[j]<='\u9fa5'):
+                        d=cc.convert(b[:j+2])
+                        d=d[:len(d)+1]
+                        c.write(d+'\n'+'\n')
+                        break
+            continue
+        elif b=='\n':
+            #print(n,'\n')
+            c.write('\n')
+            continue
+        for j in range(len(b)-1,-1,-1):
+            if ('\u4e00'<=b[j] and b[j]<='\u9fa5'):
+                d=cc.convert(b[:j+2])
+                d=d[:len(d)+1]
+                c.write(d+'\n'+'\n')
+                break
+    c.write('\n')
+    a.close()
+c.close()
+print('done')
