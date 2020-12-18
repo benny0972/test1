@@ -1,0 +1,14 @@
+import cv2
+import numpy as np
+
+def sa(contours,tt):
+    im=np.zeros((656,368,3), np.uint8)
+    im.fill(200)
+    cv2.drawContours(im,contours,tt,(0,255,255),2)
+    im = cv2.cvtColor(im, cv2.COLOR_BGR2HSV)
+    im =cv2.inRange(im,np.array([26,43,46]),np.array([35,255,255]))
+    contours, hierarchy = cv2.findContours(im,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
+    im=np.zeros((656,368,3), np.uint8)
+    im.fill(200)
+    cv2.drawContours(im,contours,-1,(0,255,255),2)
+    cv2.imwrite('np_co.jpg',im)
