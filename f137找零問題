@@ -1,7 +1,21 @@
 #不可用貪心算法
 #遞迴效率過低
 
-遞迴法(窮舉):
+#貪心算法(錯誤):
+  若金額為63，幣值為1 5 10 21 50，得出結果為5(50+10+1+1+1)，但正解為3(21+21+21)
+a,b=map(int,input().split())
+li=[]
+for i in range(b):
+    li.append(int(input()))
+li.sort(reverse=1)
+d=0
+for i in li:
+    c=a//i
+    d+=c
+    a-=c*i
+print(d)
+
+#遞迴法(窮舉):
   算出每元用所有幣值所能找的最小硬幣數
 def dp(c,li):
     li2=[]
@@ -16,8 +30,9 @@ for i in range(b):
     li.append(int(input()))
 print(dp(a,li))
 
-稍微修改 動態規劃:
- 使用字典紀錄最優解(加了個字典，效率翻倍)
+#動態規劃:
+ 使用字典紀錄最優解(只加了個字典，效率翻倍)
+ 此問題有重複子結構，故只要將先前算出的結果儲存則可避免相同問題重複計算，提升效率
 dic={}
 def dp(c,li):
     li2=[]
