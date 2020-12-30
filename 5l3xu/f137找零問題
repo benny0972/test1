@@ -1,0 +1,19 @@
+#不可用貪心算法
+#遞迴效率過低
+
+遞迴法:
+
+def dp(c,li):
+    li2=[]
+    if c in li: 
+        return 1
+    for i in [h for h in li if c-h>=0]:  
+        li2.append(dp(c-i,li)+1)
+    return min(li2)
+
+a,b=map(int,input().split())
+li=[]
+for i in range(b):
+    li.append(int(input()))
+
+print(dp(a,li))
