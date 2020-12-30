@@ -1,0 +1,36 @@
+#不可用貪心算法
+#遞迴效率過低
+
+遞迴法(窮舉):
+  算出每元用所有幣值所能找的最小硬幣數
+def dp(c,li):
+    li2=[]
+    if c in li: 
+        return 1
+    for i in [h for h in li if c-h>=0]:  
+        li2.append(dp(c-i,li)+1)
+    return min(li2)
+a,b=map(int,input().split())
+li=[]
+for i in range(b):
+    li.append(int(input()))
+print(dp(a,li))
+
+稍微修改 動態規劃:
+ 使用字典紀錄最優解(加了個字典，效率翻倍)
+dic={}
+def dp(c,li):
+    li2=[]
+    if c in li:
+        return 1
+    elif c in dic:
+        return dic[c]
+    for i in [h for h in li if c-h>=0]:
+        li2.append(dp(c-i,li)+1)
+    dic[c]=min(li2)
+    return dic[c]
+a,b=map(int,input().split())
+li=[]
+for i in range(b):
+    li.append(int(input()))
+print(dp(a,li))
