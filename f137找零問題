@@ -19,35 +19,35 @@ print(d)
 #遞迴法(窮舉):
   算出每元用所有幣值所能找的最小硬幣數
   相同問題重複計算，效率低下
-def dp(c,li):
+def dp(c):
     li2=[]
     if c in li: 
         return 1
     for i in [h for h in li if c-h>=0]:  
-        li2.append(dp(c-i,li)+1)
+        li2.append(dp(c-i)+1)
     return min(li2)
 a,b=map(int,input().split())
 li=[]
 for i in range(b):
     li.append(int(input()))
-print(dp(a,li))
+print(dp(a))
 
 #動態規劃:
  使用字典紀錄最優解(加了字典，效率翻倍)
  重複子結構，故將先前算出的結果儲存則可避免相同問題重複計算，提升效率
 dic={}
-def dp(c,li):
+def dp(c):
     li2=[]
     if c in li:
         return 1
     elif c in dic:
         return dic[c]
     for i in [h for h in li if c-h>=0]:
-        li2.append(dp(c-i,li)+1)
+        li2.append(dp(c-i)+1)
     dic[c]=min(li2)
     return dic[c]
 a,b=map(int,input().split())
 li=[]
 for i in range(b):
     li.append(int(input()))
-print(dp(a,li))
+print(dp(a))
