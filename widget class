@@ -13,6 +13,8 @@ class optionmenu:
         self.itself.grid(row=row,column=column)
     def Change(self,state):
         self.itself.config(state=state)
+    def Get(self):
+        return self.var.get()
 
 class entry:
     def __init__(self,master,row,column,vartype,varset=None,**options):
