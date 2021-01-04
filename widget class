@@ -1,0 +1,66 @@
+import tkinter as tk
+from tkinter import filedialog as fi
+
+class button:
+    def __init__(self,master,text,cmd,row,column):
+        self.itself=tk.Button(master,text=text,command=cmd)
+        self.itself.grid(row=row,column=column)
+
+class optionmenu:
+    def __init__(self,master,row,column,*options):
+        self.var=tk.StringVar()
+        self.itself=tk.OptionMenu(master,self.var,*options)
+        self.itself.grid(row=row,column=column)
+    def Change(self,state):
+        self.itself.config(state=state)
+
+class entry:
+    def __init__(self,master,row,column,vartype,varset=None,**options):
+        if vartype=='int':
+            self.var=tk.IntVar()
+            if varset:
+                self.var.set(varset)
+            else:
+                self.var.set(0)
+        else:
+            self.var=tk.DoubleVar()
+            if varset:
+                self.var.set(varset)
+            else:
+                self.var.set(0.0)
+        self.itself=tk.Entry(master,textvariable=self.var)
+        
+        if 'state' in options:
+            self.itself.config(state=options['state'])
+        elif 'height' in options:
+            self.itself.config(height=options['height'])
+        elif 'width' in options:
+            self.itself.config(width=options['width'])
+            
+        self.itself.grid(row=row,column=column)
+        
+    def Change(self,state):
+        self.itself.config(state=state)
+    def Get(self):
+        return self.var.get()
+        
+class filelist:
+    def __init__(self,master,row,columnspan):
+        self.itself=tk.Listbox(master)
+        self.itself.grid(row=row,columnspan=columnspan)
+        self.scrolly=tk.Scrollbar(master)
+        self.scrolly.grid(row=row,column=columnspan,sticky=tk.W+tk.N+tk.S)
+        self.scrollx=tk.Scrollbar(master,orient=tk.HORIZONTAL)
+        self.scrollx.grid(row=row+1,columnspan=columnspan,sticky=tk.W+tk.E)
+        self.itself.config(yscrollcommand=self.scrolly.set)
+        self.itself.config(xscrollcommand=self.scrollx.set)
+        self.scrolly.config(command=self.itself.yview)
+        self.scrollx.config(command=self.itself.xview)
+    def Input(self):
+        video=fi.askopenfilenames(initialdir = "/",filetypes = (("MP4 files","*.mp4"),("all files","*.*")))
+        for v in video:
+            self.itself.insert(tk.END,v)
+    def Delete(self):
+        self.itself.delete(self.itself.curselection())
+    def Deleteall(self):
+        self.itself.delete(0,tk.END)
