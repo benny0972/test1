@@ -17,28 +17,11 @@ class optionmenu:
         return self.var.get()
 
 class entry:
-    def __init__(self,master,row,column,vartype,varset=None,**options):
-        if vartype=='int':
-            self.var=tk.IntVar()
-            if varset:
-                self.var.set(varset)
-            else:
-                self.var.set(0)
-        else:
-            self.var=tk.DoubleVar()
-            if varset:
-                self.var.set(varset)
-            else:
-                self.var.set(0.0)
-        self.itself=tk.Entry(master,textvariable=self.var)
-        
-        if 'state' in options:
-            self.itself.config(state=options['state'])
-        elif 'height' in options:
-            self.itself.config(height=options['height'])
-        elif 'width' in options:
-            self.itself.config(width=options['width'])
-            
+    def __init__(self,master,row,column,vartype,varset=0,**options):
+        if vartype=='int': self.var=tk.IntVar()
+        else: self.var=tk.DoubleVar()
+        self.var.set(varset)
+        self.itself=tk.Entry(master,textvariable=self.var,**options)
         self.itself.grid(row=row,column=column)
         
     def Change(self,state):
@@ -66,3 +49,8 @@ class filelist:
         self.itself.delete(self.itself.curselection())
     def Deleteall(self):
         self.itself.delete(0,tk.END)
+        
+        
+
+
+
