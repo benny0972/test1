@@ -65,17 +65,9 @@ class filelist:
         for v in video:
             self.itself.insert(tk.END,v)
     def Delete(self):
-        self.itself.delete(self.itself.curselection())
+        if self.itself.curselection():
+            self.itself.delete(self.itself.curselection())
     def Deleteall(self):
         self.itself.delete(0,tk.END)
     def Get(self):
         return self.itself.get(self.itself.curselection())
-
-        
-        
-
-
-
-
-
-
