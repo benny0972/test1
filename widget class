@@ -1,37 +1,56 @@
 import tkinter as tk
 from tkinter import filedialog as fi
 
+class label:
+    def __init__(self,master,text,state='normal',**grids):
+        self.itself=tk.Label(master,text=text,state=state)
+        self.itself.grid(**grids)
+    def Change(self):
+        if self.itself['state']=='normal': self.itself.config(state='disable')
+        else: self.itself.config(state='normal')
+
 class button:
-    def __init__(self,master,text,cmd,row,column):
+    def __init__(self,master,text,cmd=None,**grids):
         self.itself=tk.Button(master,text=text,command=cmd)
-        self.itself.grid(row=row,column=column)
+        self.itself.grid(**grids)
 
 class optionmenu:
-    def __init__(self,master,row,column,*options):
+    def __init__(self,master,*menu,**grids):
         self.var=tk.StringVar()
-        self.itself=tk.OptionMenu(master,self.var,*options)
-        self.itself.grid(row=row,column=column)
-    def Change(self,state):
-        self.itself.config(state=state)
+        self.itself=tk.OptionMenu(master,self.var,*menu)
+        self.itself.grid(**grids)
+    def Change(self):
+        if self.itself['state']=='normal': self.itself.config(state='disable')
+        else: self.itself.config(state='normal')
+    def Get(self):
+        return self.var.get()
+
+class checkbutton:
+    def __init__(self,master,text,cmd=None,**grids):
+        self.var=tk.BooleanVar()
+        self.itself=tk.Checkbutton(master,text=text,var=self.var,command=cmd)
+        self.itself.grid(**grids)
     def Get(self):
         return self.var.get()
 
 class entry:
-    def __init__(self,master,row,column,vartype,varset=0,**options):
+    def __init__(self,master,width=10,state='normal',vartype='int',varset=0,**grids):
         if vartype=='int': self.var=tk.IntVar()
         else: self.var=tk.DoubleVar()
         self.var.set(varset)
-        self.itself=tk.Entry(master,textvariable=self.var,**options)
-        self.itself.grid(row=row,column=column)
+        self.itself=tk.Entry(master,width=width,state=state,textvariable=self.var)
+        self.itself.grid(**grids)
         
-    def Change(self,state):
-        self.itself.config(state=state)
+    def Change(self):
+        if self.itself['state']=='normal': self.itself.config(state='disable')
+        else: self.itself.config(state='normal')
     def Get(self):
         return self.var.get()
         
 class filelist:
     def __init__(self,master,row,columnspan):
-        self.itself=tk.Listbox(master)
+        self.var=tk.StringVar()
+        self.itself=tk.Listbox(master,listvariable=self.var)
         self.itself.grid(row=row,columnspan=columnspan)
         self.scrolly=tk.Scrollbar(master)
         self.scrolly.grid(row=row,column=columnspan,sticky=tk.W+tk.N+tk.S)
@@ -49,8 +68,14 @@ class filelist:
         self.itself.delete(self.itself.curselection())
     def Deleteall(self):
         self.itself.delete(0,tk.END)
+    def Get(self):
+        return self.itself.get(self.itself.curselection())
+
         
         
+
+
+
 
 
 
