@@ -18,7 +18,7 @@ input_button=w.button(frame1,'清除',file_list.Deleteall,row=0,column=2,padx=6)
 
 
 blur_label=w.label(frame2,'模糊',row=0,column=0)
-biur_entry=w.entry(frame2,varset=3,row=0,column=1)
+blur_entry=w.entry(frame2,varset=3,row=0,column=1)
 threshold_label=w.label(frame2,'二值化',row=1,column=0)
 threshold_entry=w.entry(frame2,row=1,varset=35,column=1)
 color_label=w.label(frame2,'顏色',row=2,column=0)
