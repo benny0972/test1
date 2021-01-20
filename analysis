@@ -1,0 +1,67 @@
+import numpy as np
+import cv2
+
+def cnt_jpg(path):
+    img=cv2.imread(path,1)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    img =cv2.inRange(img,np.array([26,43,46]),np.array([35,255,255]))
+    contourss,_ = cv2.findContours(img,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
+    return contourss[0]
+
+def draw(frame,cnts,jpg_c):
+    t=0
+    for c in cnts:
+        M= cv2.moments(c)
+        Sim=cv2.matchShapes(c, jpg_c, 1, 0.0)
+        if M['m10'] and M['m01'] and M['m00'] != 0:
+            cX= int(M['m10'] / M['m00'])
+            cY= int(M['m01'] / M['m00'])
+        if Sim<=0.25 and cv2.contourArea(c)>1000:
+            cv2.putText(frame, str(Sim),(cX, cY+5),cv2.FONT_HERSHEY_SIMPLEX,0.5,(0, 255, 255))
+            cv2.drawContours(frame,cnts,t,(0,255,255),2)
+        t+=1
+    return frame
+
+def process(frame,blur,threshold,lower,upper):
+    frame=cv2.blur(frame,(blur,blur),0)
+    _,frame=cv2.threshold(frame, threshold, 255, cv2.THRESH_BINARY)
+    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+    frame=cv2.inRange(frame,np.array(lower),np.array(upper))
+    cnts,_ = cv2.findContours(frame,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
+    return frame,cnts
+
+class ROI:
+    def load(self,path):
+        cv2.namedWindow('ROIset')
+        self.video=cv2.VideoCapture('\\\\'.join(path.split('/')))
+        self.frame=None
+        self.time=0
+        self.LUX=0
+        self.LUY=0
+        self.RUX=0
+        self.RUY=0
+    def get_coordinate(self,event,x,y,flags,param):
+        if event == cv2.EVENT_LBUTTONDOWN:
+            print(x,',',y)
+            self.LUX=x
+            self.LUY=y
+            cv2.circle(self.frame,(self.LUX,self.LUY),1,(0,255,255))
+            cv2.imshow('ROIset',self.frame)
+        if event == cv2.EVENT_RBUTTONDOWN:
+            print(x,',',y)
+            self.RUX=x
+            self.RUY=y
+            cv2.rectangle(self.frame,(self.LUX,self.LUY),(self.RUX,self.RUY),(0,255,255),2, cv2.LINE_AA)
+            cv2.imshow('ROIset',self.frame)
+            cv2.waitKey(500)
+            self.time=1
+    def roiset(self):
+        _,self.frame=self.video.read()
+        cv2.setMouseCallback('ROIset',self.get_coordinate)
+        cv2.imshow('ROIset',self.frame)
+        while self.time!=1:
+            cv2.waitKey(500)
+        self.video.release()
+        cv2.destroyAllWindows()
+        return self.LUX,self.LUY,self.RUX,self.RUY
+   
