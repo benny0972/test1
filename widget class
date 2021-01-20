@@ -15,9 +15,9 @@ class button:
         self.itself.grid(**grids)
 
 class optionmenu:
-    def __init__(self,master,*menu,**grids):
+    def __init__(self,master,cmd,*menu,**grids):
         self.var=tk.StringVar()
-        self.itself=tk.OptionMenu(master,self.var,*menu)
+        self.itself=tk.OptionMenu(master,self.var,command=cmd,*menu)
         self.itself.grid(**grids)
     def Change(self):
         if self.itself['state']=='normal': self.itself.config(state='disable')
@@ -46,6 +46,9 @@ class entry:
         else: self.itself.config(state='normal')
     def Get(self):
         return self.var.get()
+    def Set(self,text):
+        self.itself.delete(0,tk.END)
+        self.itself.insert(0,text)
         
 class filelist:
     def __init__(self,master,row,columnspan):
@@ -71,3 +74,7 @@ class filelist:
         self.itself.delete(0,tk.END)
     def Get(self):
         return self.itself.get(self.itself.curselection())
+        
+        
+
+
