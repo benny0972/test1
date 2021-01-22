@@ -1,59 +1,59 @@
 import tkinter as tk
 from tkinter import filedialog as fi
 
-class label:
+
+class m_Change:
+    def Change(self):
+        if self.itself['state']=='normal': self.itself.config(state='disabled')
+        else: self.itself.config(state='normal')
+        
+class m_Get:
+    def Get(self):
+        return self.var.get() 
+        
+class label(m_Change):
     def __init__(self,master,text,state='normal',**grids):
         self.itself=tk.Label(master,text=text,state=state)
-        self.itself.grid(**grids)
-    def Change(self):
-        if self.itself['state']=='normal': self.itself.config(state='disable')
-        else: self.itself.config(state='normal')
+        self.itself.grid(**grids)   
 
 class button:
-    def __init__(self,master,text,cmd=None,**grids):
-        self.itself=tk.Button(master,text=text,command=cmd)
+    def __init__(self,master,text,cmd=None,width=None,**grids):
+        self.itself=tk.Button(master,text=text,command=cmd,width=width)
         self.itself.grid(**grids)
 
-class optionmenu:
-    def __init__(self,master,cmd,*menu,**grids):
+class optionmenu(m_Change,m_Get):
+    def __init__(self,master,cmd=None,*menu,**grids):
         self.var=tk.StringVar()
         self.itself=tk.OptionMenu(master,self.var,command=cmd,*menu)
         self.itself.grid(**grids)
-    def Change(self):
-        if self.itself['state']=='normal': self.itself.config(state='disable')
-        else: self.itself.config(state='normal')
-    def Get(self):
-        return self.var.get()
 
-class checkbutton:
+class checkbutton(m_Get):
     def __init__(self,master,text,cmd=None,**grids):
         self.var=tk.BooleanVar()
         self.itself=tk.Checkbutton(master,text=text,var=self.var,command=cmd)
         self.itself.grid(**grids)
-    def Get(self):
-        return self.var.get()
 
-class entry:
+class entry(m_Change,m_Get):
     def __init__(self,master,width=10,state='normal',vartype='int',varset=0,**grids):
         if vartype=='int': self.var=tk.IntVar()
         else: self.var=tk.DoubleVar()
         self.var.set(varset)
         self.itself=tk.Entry(master,width=width,state=state,textvariable=self.var)
         self.itself.grid(**grids)
-        
-    def Change(self):
-        if self.itself['state']=='normal': self.itself.config(state='disable')
-        else: self.itself.config(state='normal')
-    def Get(self):
-        return self.var.get()
     def Set(self,text):
-        self.itself.delete(0,tk.END)
-        self.itself.insert(0,text)
+        if self.itself['state']=='disabled':
+            self.Change()
+            self.itself.delete(0,tk.END)
+            self.itself.insert(0,text)
+            self.Change()
+        else:
+            self.itself.delete(0,tk.END)
+            self.itself.insert(0,text)
         
 class filelist:
-    def __init__(self,master,row,columnspan):
+    def __init__(self,master,width,row,columnspan):
         self.var=tk.StringVar()
-        self.itself=tk.Listbox(master,listvariable=self.var)
+        self.itself=tk.Listbox(master,width=width,listvariable=self.var)
         self.itself.grid(row=row,columnspan=columnspan)
         self.scrolly=tk.Scrollbar(master)
         self.scrolly.grid(row=row,column=columnspan,sticky=tk.W+tk.N+tk.S)
@@ -64,7 +64,7 @@ class filelist:
         self.scrolly.config(command=self.itself.yview)
         self.scrollx.config(command=self.itself.xview)
     def Input(self):
-        video=fi.askopenfilenames(initialdir = "/",filetypes = (("MP4 files","*.mp4"),("all files","*.*")))
+        video=fi.askopenfilenames(initialdir = "/",filetypes = (("MP4 files","*.mp4"),("AVI files","*.avi"),("all files","*.*")))
         for v in video:
             self.itself.insert(tk.END,v)
     def Delete(self):
@@ -75,6 +75,31 @@ class filelist:
     def Get(self):
         return self.itself.get(self.itself.curselection())
         
+class hsv_entry():
+    def __init__(self,master,optext,label_visbale,row,col):
+        self.color={'紅色':(0,43,46,10,255,255),'藍色':(78,43,46,99,255,255)}
+        self.color_label=label(master,optext,row=row,column=col)
+        self.color_optionmenu=optionmenu(master,self.Set,*self.color.keys(),row=row,column=col+1)
+        if label_visbale==1:
+            self.Hmin_label=label(master,'低色相(H)',state='normal',row=row+1,column=col)
+            self.Hmax_label=label(master,'高色相(H)',state='normal',row=row+2,column=col)
+            self.Smin_label=label(master,'低飽和(S)',state='normal',row=row+3,column=col)
+            self.Smax_label=label(master,'高飽和(S)',state='normal',row=row+4,column=col)
+            self.Vmin_label=label(master,'低亮度(V)',state='normal',row=row+5,column=col)
+            self.Vmax_label=label(master,'高亮度(V)',state='normal',row=row+6,column=col)
         
-
+        self.Hmin_entry=entry(master,state='normal',row=row+1,column=col+1)
+        self.Hmax_entry=entry(master,state='normal',row=row+2,column=col+1)
+        self.Smin_entry=entry(master,state='normal',row=row+3,column=col+1)
+        self.Smax_entry=entry(master,state='normal',row=row+4,column=col+1)
+        self.Vmin_entry=entry(master,state='normal',row=row+5,column=col+1)
+        self.Vmax_entry=entry(master,state='normal',row=row+6,column=col+1)
+    def Set(self,x):
+        self.Hmin_entry.Set(self.color[x][0]); self.Hmax_entry.Set(self.color[x][3])
+        self.Smin_entry.Set(self.color[x][1]); self.Smax_entry.Set(self.color[x][4])
+        self.Vmin_entry.Set(self.color[x][2]); self.Vmax_entry.Set(self.color[x][5])
+    def Getmin(self):
+        return [self.Hmin_entry.Get(),self.Smin_entry.Get(),self.Vmin_entry.Get()]
+    def Getmax(self):
+        return [self.Hmax_entry.Get(),self.Smax_entry.Get(),self.Vmax_entry.Get()]
 
