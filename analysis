@@ -8,28 +8,57 @@ def cnt_jpg(path):
     contourss,_ = cv2.findContours(img,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
     return contourss[0]
 
-def draw(frame,cnts,jpg_c):
-    t=0
-    for c in cnts:
-        M= cv2.moments(c)
-        Sim=cv2.matchShapes(c, jpg_c, 1, 0.0)
-        if M['m10'] and M['m01'] and M['m00'] != 0:
-            cX= int(M['m10'] / M['m00'])
-            cY= int(M['m01'] / M['m00'])
-        if Sim<=0.25 and cv2.contourArea(c)>1000:
-            cv2.putText(frame, str(Sim),(cX, cY+5),cv2.FONT_HERSHEY_SIMPLEX,0.5,(0, 255, 255))
-            cv2.drawContours(frame,cnts,t,(0,255,255),2)
-        t+=1
-    return frame
+class Processor:
+    def __init__(self,jpg_c):
+        self.jpg_c=jpg_c
+    def initialize(self,path,blur,threshold,lower,upper):
+        self.video=cv2.VideoCapture('\\\\'.join(path.split('/')))
+        cv2.namedWindow('Preview')
+        self.blur=blur
+        self.threshold=threshold
+        self.lower=np.array(lower)
+        self.upper=np.array(upper)
+        self.frame=None
+        self.area=[]
+        self.center=[]
+        
+    def side(self):
+        while self.video.isOpened():
+            ret,self.frame=self.video.read()
+            if ret==1 and cv2.getWindowProperty('Preview',4)==1:
+                frame=cv2.blur(self.frame,(self.blur,self.blur),0)
+                _,frame=cv2.threshold(frame,self.threshold, 255, cv2.THRESH_BINARY)
+                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+                frame=cv2.inRange(frame,self.lower,self.upper)
+                cnts,_ = cv2.findContours(frame,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
+                self.__draw__(frame,cnts)
+            else:
+                self.video.release()
+                cv2.destroyAllWindows()
+            
+    def __draw__(self,frame,cnts):
+        num=0
+        for c in cnts:
+            M= cv2.moments(c)
+            Sim=cv2.matchShapes(c,self.jpg_c,1,0.0)
+            if M['m10'] and M['m01'] and M['m00'] != 0:
+                cX= int(M['m10'] / M['m00'])
+                cY= int(M['m01'] / M['m00'])
+            if Sim<=0.25 and cv2.contourArea(c)>1000:
+                cv2.putText(self.frame, str(Sim),(cX, cY+5),cv2.FONT_HERSHEY_SIMPLEX,0.5,(0, 255, 255))
+                cv2.drawContours(self.frame,cnts,num,(0,255,255),2)
+                self.area.append(cv2.contourArea(c))
+                self.center.append((cX,cY))
+            num+=1
+        self.show()
+        
+    def show(self):
+        cv2.imshow('Preview',self.frame)
+        cv2.waitKey(1)
 
-def process(frame,blur,threshold,lower,upper):
-    frame=cv2.blur(frame,(blur,blur),0)
-    _,frame=cv2.threshold(frame, threshold, 255, cv2.THRESH_BINARY)
-    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-    frame=cv2.inRange(frame,np.array(lower),np.array(upper))
-    cnts,_ = cv2.findContours(frame,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
-    return frame,cnts
-
+    def Get(self):
+        return self.area,self.center
+    
 class ROI:
     def load(self,path):
         cv2.namedWindow('ROIset')
@@ -42,13 +71,11 @@ class ROI:
         self.RUY=0
     def get_coordinate(self,event,x,y,flags,param):
         if event == cv2.EVENT_LBUTTONDOWN:
-            print(x,',',y)
             self.LUX=x
             self.LUY=y
             cv2.circle(self.frame,(self.LUX,self.LUY),1,(0,255,255))
             cv2.imshow('ROIset',self.frame)
         if event == cv2.EVENT_RBUTTONDOWN:
-            print(x,',',y)
             self.RUX=x
             self.RUY=y
             cv2.rectangle(self.frame,(self.LUX,self.LUY),(self.RUX,self.RUY),(0,255,255),2, cv2.LINE_AA)
@@ -59,9 +86,8 @@ class ROI:
         _,self.frame=self.video.read()
         cv2.setMouseCallback('ROIset',self.get_coordinate)
         cv2.imshow('ROIset',self.frame)
-        while self.time!=1:
+        while self.time!=1 and cv2.getWindowProperty('ROIset',4)==1:
             cv2.waitKey(500)
         self.video.release()
         cv2.destroyAllWindows()
         return self.LUX,self.LUY,self.RUX,self.RUY
-   
