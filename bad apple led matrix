@@ -1,0 +1,99 @@
+'''Python'''
+import cv2,serial
+
+COM_PORT = 'COM3' 
+BAUD_RATES = 19200
+ser = serial.Serial(COM_PORT, BAUD_RATES) 
+
+def masaka(img):
+    go=''
+    data=[]
+    mash=360//(8*1)
+    masw=480//(8*1)
+    bre=0
+    width=img.shape[1]
+    height=img.shape[0]
+    wt=width//masw
+    ht=height//mash
+    h=mash//2
+    for mh in range(ht):
+        w=masw//2
+        if h+mash//2>height:
+            break
+        for mw in range(wt):
+            if w+masw//2>width:
+                break
+            img[h-mash//2:h+mash//2+1,w-masw//2:w+masw//2+1]=img[h][w]
+            if img[h][w][0]: data.append('1')
+            else: data.append('0')
+            w+=masw
+        h+=mash
+    while data:
+        go+=chr(int(data.pop(0)+data.pop(0)+data.pop(0)+data.pop(0),2))
+    ser.write(go.encode())
+    img=img[0:mash*ht,0:masw*wt]
+    cv2.imshow('b',img)
+
+img=cv2.VideoCapture(r'C:\Users\user\Videos\toho.mp4')
+
+while img.isOpened():
+    ret,a=img.read()
+    key=cv2.waitKey(30)
+    if key==ord('1'):
+        continue
+    elif key==ord('0') or not ret:
+        print('Finish!!!')
+        break
+    else:
+        masaka(a)
+ser.close()
+img.release()
+cv2.destroyAllWindows()
+
+
+'''Arduino'''
+#define data1 8
+#define push1 10
+#define data2 11
+#define push2 12
+byte data[16];
+
+void setup() {
+  Serial.begin(19200);
+  Serial.setTimeout(5);
+  DDRB=B011111;
+}
+
+void loop() {
+  byte a=B10000000;
+  if(Serial.available()){
+      Serial.readBytes(data,16);
+      BitWrite();
+      Clear();
+  }
+  for(byte i=0;i<16;i+=2){
+    bitClear(PORTB,1);
+    shiftOut(data1,push1,MSBFIRST,data[i+1]);
+    shiftOut(data2,push2,LSBFIRST,~a);
+    bitSet(PORTB,1);
+    delay(1);
+    Dark();
+    a>>=1;
+  }
+}
+void Dark(){
+  bitClear(PORTB,1);
+  shiftOut(data2,push2,LSBFIRST,255);
+  bitSet(PORTB,1);
+}
+void Clear(){
+  while(Serial.read()>=0){
+  }
+}
+void BitWrite(){
+  for(byte i=1;i<16;i+=2){
+    for(byte y=0;y<4;y++){
+      bitWrite(data[i],y+4,bitRead(data[i-1],y));
+    }
+  }
+}
