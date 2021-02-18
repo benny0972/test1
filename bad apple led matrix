@@ -1,9 +1,14 @@
 '''Python'''
-import cv2,serial
+import cv2
+import serial
+import numpy as np
+from ffpyplayer.player import MediaPlayer
 
-COM_PORT = 'COM3' 
-BAUD_RATES = 19200
-ser = serial.Serial(COM_PORT, BAUD_RATES) 
+def Frame(frame):
+    img, t = frame
+    w = img.get_size()[0] 
+    h = img.get_size()[1]
+    return np.uint8(np.asarray(list(img.to_bytearray()[0])).reshape(h,w,3)) # h - height of frame, w - width of frame, 3 - number of channels in frame
 
 def masaka(img):
     go=''
@@ -34,22 +39,25 @@ def masaka(img):
     img=img[0:mash*ht,0:masw*wt]
     cv2.imshow('b',img)
 
-img=cv2.VideoCapture(r'C:\Users\user\Videos\toho.mp4')
+COM_PORT = 'COM3' 
+BAUD_RATES = 19200
+ser = serial.Serial(COM_PORT, BAUD_RATES) 
+player = MediaPlayer(r"C:\Users\user\Videos\toho.mp4")
+val=''
 
-while img.isOpened():
-    ret,a=img.read()
-    key=cv2.waitKey(30)
-    if key==ord('1'):
-        continue
-    elif key==ord('0') or not ret:
-        print('Finish!!!')
-        break
-    else:
-        masaka(a)
+while val!='eof':
+    frame, val = player.get_frame()
+    if val != 'eof' and frame is not None:
+        masaka(Frame(frame))
+        if cv2.waitKey(1)== ord('0'):
+            print('finish!')
+            break
+
+
+        
 ser.close()
-img.release()
+player.close_player()
 cv2.destroyAllWindows()
-
 
 '''Arduino'''
 #define data1 8
