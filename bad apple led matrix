@@ -12,9 +12,6 @@ def Frame(frame):
 
 def masaka(img):
     go=''
-    data=[]
-    mash=360//(8*1)
-    masw=480//(8*1)
     bre=0
     width=img.shape[1]
     height=img.shape[0]
@@ -22,6 +19,7 @@ def masaka(img):
     ht=height//mash
     h=mash//2
     for mh in range(ht):
+        data=''
         w=masw//2
         if h+mash//2>height:
             break
@@ -29,13 +27,12 @@ def masaka(img):
             if w+masw//2>width:
                 break
             img[h-mash//2:h+mash//2+1,w-masw//2:w+masw//2+1]=img[h][w]
-            if img[h][w][0]: data.append('1')
-            else: data.append('0')
+            if img[h][w]: data+='1'
+            else: data+='0'
             w+=masw
         h+=mash
-    while data:
-        go+=chr(int(data.pop(0)+data.pop(0)+data.pop(0)+data.pop(0),2))
-    ser.write(go.encode())
+        go+=chr(int(data,2))
+    ser.write(go.encode('latin_1'))
     img=img[0:mash*ht,0:masw*wt]
     cv2.imshow('b',img)
 
@@ -43,28 +40,30 @@ COM_PORT = 'COM3'
 BAUD_RATES = 19200
 ser = serial.Serial(COM_PORT, BAUD_RATES) 
 player = MediaPlayer(r"C:\Users\user\Videos\toho.mp4")
-val=''
+mash=360//(8*1)
+masw=480//(8*1)
 
+val=''
 while val!='eof':
     frame, val = player.get_frame()
     if val != 'eof' and frame is not None:
-        masaka(Frame(frame))
-        if cv2.waitKey(1)== ord('0'):
+        frame=Frame(frame)
+        cv2.imshow('s',frame)
+        ret,frame= cv2.threshold(cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY),127,255,cv2.THRESH_BINARY)
+        if cv2.waitKey(1)== ord('0') or not ret:
             print('finish!')
             break
-
-
-        
+        else:
+            masaka(frame)     
 ser.close()
 player.close_player()
 cv2.destroyAllWindows()
-
 '''Arduino'''
 #define data1 8
 #define push1 10
 #define data2 11
 #define push2 12
-byte data[16];
+byte data[8];
 
 void setup() {
   Serial.begin(19200);
@@ -75,13 +74,12 @@ void setup() {
 void loop() {
   byte a=B10000000;
   if(Serial.available()){
-      Serial.readBytes(data,16);
-      BitWrite();
+      Serial.readBytes(data,8);
       Clear();
   }
-  for(byte i=0;i<16;i+=2){
+  for(byte i=0;i<8;i++){
     bitClear(PORTB,1);
-    shiftOut(data1,push1,MSBFIRST,data[i+1]);
+    shiftOut(data1,push1,MSBFIRST,data[i]);
     shiftOut(data2,push2,LSBFIRST,~a);
     bitSet(PORTB,1);
     delay(1);
@@ -96,12 +94,5 @@ void Dark(){
 }
 void Clear(){
   while(Serial.read()>=0){
-  }
-}
-void BitWrite(){
-  for(byte i=1;i<16;i+=2){
-    for(byte y=0;y<4;y++){
-      bitWrite(data[i],y+4,bitRead(data[i-1],y));
-    }
   }
 }
