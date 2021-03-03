@@ -1,0 +1,40 @@
+import serial as ser
+import tkinter as tk
+
+COM_PORT = 'COM6' 
+BAUD_RATES = 19200
+serial = ser.Serial(COM_PORT, BAUD_RATES) 
+
+class chk:
+    def __init__(self,master,r,c):
+        self.var=tk.BooleanVar()
+        self.bt=tk.Checkbutton(master,var=self.var)
+        self.bt.grid(row=r,column=c)
+    def get(self):
+        return self.var.get()
+
+class LedArray:
+    def __init__(self,master,row,col):
+        self.frame=tk.LabelFrame(master)
+        self.frame.grid(row=row,column=col)
+        self.chks=[]
+        for i in range(8):
+            for j in range(8):
+                self.chks.append(chk(self.frame,i,j))
+    def Byte(self):
+        t=0
+        go=''
+        for i in range(8):
+            data=''
+            for j in range(8):
+                data+=str(int(self.chks[i*8+j].get()))
+            go+=chr(int(data,2))
+        #print(go)
+        serial.write(go.encode('latin-1'))
+            
+                
+
+root=tk.Tk()
+a=LedArray(root,0,0)
+b=tk.Button(root,text='send',command=a.Byte)
+b.grid(row=1,column=0)
