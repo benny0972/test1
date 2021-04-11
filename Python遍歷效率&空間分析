@@ -1,44 +1,41 @@
-from time import *
+from time import time
 from sys import getsizeof
 
-length=20000000 #遍歷0~19999999時間(s)&空間(Bytes)分析
+length=20000000 #0~19999999取值 時間(s)&空間(Bytes)分析
 a=[i for i in range(length)]
 
 #<一>. 使用for list[i]
-t1=time()
-for i in range(length):
-    number=a[i]    
-print("<一> for list[i]      耗時:",time()-t1,' ',"空間: ",getsizeof(a))
+start=time()
+for i in range(length): number=a[i]
+end=time()
+print("<一> for list[i]      耗時:",end-start,' ',"空間: ",getsizeof(a))
 
 #<二>. 使用for迭代
-t1=time()
-for i in a:
-    number=i
-print("<二> for迭代          耗時:",time()-t1,' ',"空間: ",getsizeof(a))
+start=time()
+for i in a: number=i
+end=time()
+print("<二> for迭代          耗時:",end-start,' ',"空間: ",getsizeof(a))
 
 #<三>. 使用iterator
 it=iter(a)
-t1=time()
-for i in it:
-    number=i
-print("<三> iterator         耗時:",time()-t1,' ',"空間: ",getsizeof(it))
+start=time()
+for i in it: number=i
+end=time()
+print("<三> iterator         耗時:",end-start,' ',"空間: ",getsizeof(it))
 
 #<四>. 使用generator表達式
 gen=(i for i in a)
-t1=time()
-for i in gen:
-    number=i
-print("<四> generator表達式  耗時:",time()-t1,' ',"空間: ",getsizeof(gen))
+start=time()
+for i in gen: number=i
+end=time()
+print("<四> generator表達式  耗時:",end-start,' ',"空間: ",getsizeof(gen))
 
 #<五>. 使用generator函式
 def Gen(Max):
-    time=0
-    while time<Max:
-        yield time
-        time+=1
+    for i in range(Max):
+        yield i
+start=time()
 gen=Gen(length)
-t1=time()
-for i in gen:
-    number=i
-print("<五> generator函式    耗時:",time()-t1,' ',"空間: ",getsizeof(gen))
-
+for i in gen: number=i
+end=time()
+print("<五> generator函式    耗時:",end-start,' ',"空間: ",getsizeof(gen))
