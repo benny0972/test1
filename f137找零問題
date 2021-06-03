@@ -32,7 +32,7 @@ for i in range(b):
     li.append(int(input()))
 print(dp(a))
 
-#動態規劃:
+#動態規劃(遞迴):
  使用字典紀錄最優解(加了字典，效率翻倍)
  重複子結構，故將先前算出的結果儲存則可避免相同問題重複計算，提升效率
 dic={}
@@ -51,3 +51,32 @@ li=[]
 for i in range(b):
     li.append(int(input()))
 print(dp(a))
+
+#動態規劃(填表):
+/*
+    DP找零問題
+    算出每元的最小硬幣數, 再用最後的dp算出(組合出m元)的最小硬幣數
+*/
+
+#include<bits/stdc++.h> 
+using namespace std; 
+
+int m, n, mon[10],dp[1001]={0};
+inline int exchange(){
+    int o=INT_MAX;
+    for(int j=0; j<n; ++j){
+        for(int i=mon[j]; i<=m; ++i){
+            dp[i]=min(dp[i], dp[i-mon[j]]+1); //算出能組成每元的最小硬幣數,若不能則維持MAX_INT
+        }
+    }
+    for(int i=m; i>=0; --i){
+        o=min(dp[m], dp[m-i]+dp[i]); //用dp組合出m元 求最小硬幣數
+    }
+    return o;
+}
+int main() {
+    cin>>m>>n;
+    for(int i=1; i<1001; ++i) dp[i]=m;//最大值隨便設
+    for(int i=0; i<n; ++i) cin>>mon[i];
+    cout<<exchange();
+}
