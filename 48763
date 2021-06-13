@@ -382,18 +382,27 @@ int main()
     while(cin>>foot)
     {
         if(foot==0) break;
-        if(1)
-        {
-            int MAX=foot/4+(foot-foot/4*4)/2;
-            int MIN=foot/2;
-            cout<<MAX<<' '<<MIN<<endl;
-        }
-        else cout<<"0 0"<<endl;
+        int MAX=foot/4+(foot-foot/4*4)/2;
+        int MIN=foot/2;
+        cout<<MAX<<' '<<MIN<<endl;
     }
 }
 
 
-2-13(X
+2-13
+#include <iostream>
+using namespace std;
+int main()
+{
+    int foot;
+    while(cin>>foot)
+    {
+        if(foot==0) break;
+        int MAX=foot/4+(foot-foot/4*4)/2;
+        int MIN=foot/2;
+        cout<<MAX<<' '<<MIN<<endl;
+    }
+}
 
 
 3-1
