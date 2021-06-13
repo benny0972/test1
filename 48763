@@ -24,11 +24,10 @@ int main()
 1-3
 #include <iostream>
 #include <cstdio>
-
 using namespace std;
-
 int main()
-{   string s;
+{   
+    string s;
     cin>>s;
     cout<<"親愛的"<<s<<"，妳是世界上最美的人"<< endl;
 }
@@ -57,12 +56,8 @@ int main() {
     a=b/(a*a);
     a=a*1000.0+0.5;
     a/=1000.0;
-    if(int(a)==40){
-        cout<<40.816<<endl;
-    }
-    else{
-        printf("%.3llf",a);
-    }
+    if(int(a)==40) cout<<40.816<<endl;
+    else printf("%.3llf",a);
 }
 
 
@@ -76,14 +71,8 @@ int main()
     int b;
     cin>>a;
     b=a/3;
-    if(a-b*3)
-    {
-        printf("第 %d 組",b+1);
-    }
-    else
-    {
-        printf("第 %d 組",b);
-    }
+    if(a-b*3) printf("第 %d 組",b+1);
+    else printf("第 %d 組",b);
 }
 
 
@@ -94,15 +83,9 @@ using namespace std;
 int main(){
     int a;
     cin>>a;
-    if(a==0){
-        cout<<1<<endl;
-    }
-    else if(a==1) {
-        cout<<2<<endl;
-    }
-    else{
-        cout<<0<<endl;
-    }
+    if(a==0) cout<<1<<endl;
+    else if(a==1) cout<<2<<endl;
+    else cout<<0<<endl;
 }
 
 
@@ -113,12 +96,8 @@ int main() {
     int a;
     cin>>a;
     a-=15;
-    if(a<0){
-        cout<<24+a<<endl;
-    }
-    else{
-        cout<<a<<endl;
-    }
+    if(a<0) cout<<24+a<<endl;
+    else cout<<a<<endl;
 }
 
 
@@ -132,12 +111,8 @@ int main() {
         int b=a.length();
         printf("個位數: %c, 十位數: %c, 百位數: %c",a[b-1],a[b-2],a[b-3]);
     }
-    else if(a.length()==2){
-        printf("個位數: %c, 十位數: %c, 百位數: 0",a[1],a[0]);
-    }
-    else if(a.length()==1){
-        printf("個位數: %c, 十位數: 0, 百位數: 0",a[0]);
-    }
+    else if(a.length()==2) printf("個位數: %c, 十位數: %c, 百位數: 0",a[1],a[0]);
+    else if(a.length()==1) printf("個位數: %c, 十位數: 0, 百位數: 0",a[0]);
 }
 
 
@@ -164,9 +139,7 @@ int main() {
         b.insert(0,c);
         cout<<a<<b<<endl;
     }
-    else{
-        cout<<a<<b<<endl;
-    }  
+    else cout<<a<<b<<endl;
 }
 
 
@@ -179,24 +152,16 @@ int main() {
         cin>>a[i];
         cin.ignore();
     }
-    if(a[3]<a[0]){
-        a[3]+=24;
-    }
+    if(a[3]<a[0]) a[3]+=24;
     t=(a[3]*3600+a[4]*60+a[5])-(a[0]*3600+a[1]*60+a[2]);
     h=t/3600;
     m=(t-h*3600)/60;
     s=t-(h*3600+m*60);
-    if(h<10){
-        cout<<0;
-    }
+    if(h<10) cout<<0;
     cout<<h<<':';
-    if(m<10){
-        cout<<0;
-    }
+    if(m<10) cout<<0;
     cout<<m<<':';
-    if(s<10){
-        cout<<0;
-    }
+    if(s<10) cout<<0;
     cout<<s<<'\n';
 }
 
@@ -215,19 +180,10 @@ int main()
         double d=abs(b*b-4*a*c);
         if(b*b-4*a*c>=0)
         {
-            if(int(sqrt(d))==sqrt(d))
-            {
-            cout<<"Yes"<<endl;
-            }
-            else
-            {
-            cout<<"No"<<endl;
-            }
+            if(int(sqrt(d))==sqrt(d)) cout<<"Yes"<<endl;
+            else cout<<"No"<<endl;
         }
-        else
-        {
-           cout<<"No"<<endl; 
-        }
+        else cout<<"No"<<endl; 
     }
     return 0;
 }
@@ -266,23 +222,11 @@ int main()
     cin>>y;
     if(y%4==0)
     {
-        if(y%400==0)
-        {
-            cout<<"a leap year";
-        }
-        else if(y%400!=0 and y%100==0)
-        {
-            cout<<"a normal year";
-        }
-        else
-        {
-            cout<<"a leap year";
-        }
+        if(y%400==0) cout<<"a leap year";
+        else if(y%400!=0 and y%100==0) cout<<"a normal year";
+        else cout<<"a leap year";
     }
-    else
-    {
-        cout<<"a normal year";
-    }
+    else cout<<"a normal year";
 }
 
 
@@ -293,9 +237,7 @@ int main() {
     int a;
     long b=1;
     cin>>a;
-    for(int c=1;c<=a;c++){
-        b*=c;
-    }
+    for(int c=1;c<=a;c++) b*=c;
     cout<<b<<endl;
 }
 
@@ -325,10 +267,7 @@ int main() {
         if(a%i==0)
         {
             cout<<i;
-            if(i!=a)
-            {
-            cout<<' ';
-            }
+            if(i!=a) cout<<' ';
         }
     }
 }
@@ -342,10 +281,7 @@ int main() {
     cin>>a>>b;
     while(1)
     {
-        if(a>=b)
-        {
-            break;
-        }
+        if(a>=b) break;
         a*=3;
         m++;
     }
@@ -359,15 +295,9 @@ using namespace std;
 unsigned long long a,b;
 int main() {
     while(cin>>a>>b){
-        if(a==0 and b==0){
-            break;
-        }
-        else if(a>b){
-            cout<<"Unfair"<<endl;
-        }
-        else{
-            cout<<"Fair"<<endl;
-        }
+        if(a==0 and b==0) break;
+        else if(a>b) cout<<"Unfair"<<endl;
+        else cout<<"Fair"<<endl;
     }
 }
 
@@ -386,19 +316,10 @@ int main()
         double d=abs(b*b-4*a*c);
         if(b*b-4*a*c>=0)
         {
-            if(int(sqrt(d))==sqrt(d))
-            {
-            cout<<"Yes"<<endl;
-            }
-            else
-            {
-            cout<<"No"<<endl;
-            }
+            if(int(sqrt(d))==sqrt(d)) cout<<"Yes"<<endl;
+            else cout<<"No"<<endl;
         }
-        else
-        {
-           cout<<"No"<<endl; 
-        }
+        else cout<<"No"<<endl; 
     }
     return 0;
 }
@@ -411,26 +332,14 @@ int main()
 {
     unsigned long long n,a,b,d;
     cin>>n>>a>>b;
-    if(a<n and a<=b)
-    {
-        cout<<-1<<endl;
-    }
+    if(a<n and a<=b) cout<<-1<<endl;
     else
     {
-        if(n-a==0)
-        {
-            cout<<1<<endl;
-        }
+        if(n-a==0) cout<<1<<endl;
         else
         {
-            if((n-a)%(-b+a)==0)
-            {
-                cout<<(n-a)/(-b+a)+1<<endl;
-            }
-            else
-            {
-                cout<<(n-a)/(-b+a)+2<<endl;
-            }
+            if((n-a)%(-b+a)==0) cout<<(n-a)/(-b+a)+1<<endl;
+            else cout<<(n-a)/(-b+a)+2<<endl;
         }
     }
     return 0;
@@ -449,29 +358,16 @@ int main()
         long p;
         bool a=0;
         cin>>p;
-        if(p<=1)
-        {
-            a=1;
-        }
+        if(p<=1) a=1;
         else
         {
            for(int r=2;r<(int)sqrt(p);r++)
            {
-                if(p%r==0)
-                {
-                    a=1;
-                    break;
-                }
+                if(p%r==0){a=1; break;};
             } 
         }
-        if(a)
-        {
-            cout<<"非質數"<<endl;
-        }
-        else
-        {
-            cout<<"質數"<<endl;
-        }
+        if(a) cout<<"非質數"<<endl;
+        else cout<<"質數"<<endl;
     }
     return 0;
 }
@@ -485,20 +381,14 @@ int main()
     int foot;
     while(cin>>foot)
     {
-        if(foot==0)
-        {
-            break;
-        }
+        if(foot==0) break;
         if(1)
         {
             int MAX=foot/4+(foot-foot/4*4)/2;
             int MIN=foot/2;
             cout<<MAX<<' '<<MIN<<endl;
         }
-        else
-        {
-            cout<<"0 0"<<endl;
-        }
+        else cout<<"0 0"<<endl;
     }
 }
 
@@ -526,13 +416,9 @@ int main()
 {
     string s;
     cin>>s;
-    for(int i=0;i<3;i++){
-        cout<<s[i];
-    }
+    for(int i=0;i<3;i++) cout<<s[i];
     cout<<'o';
-    for(int i=6;i<s.size();i++){
-        cout<<s[i];
-    }
+    for(int i=6;i<s.size();i++) cout<<s[i];
 }
 
 
@@ -541,20 +427,9 @@ int main()
 using namespace std;
 int main() {
     short int time[6];
-    for(char i=0;i<4;i++)
-    {
-        cin>>time[i];
-        cin.ignore();
-    }
-    
-    if(time[0]*60+time[1]<time[2]*60+time[3])
-    {
-        printf("%d",time[2]*60+time[3]-time[0]*60-time[1]);
-    }
-    else
-    {
-       printf("%d",1440+time[2]*60+time[3]-time[0]*60-time[1]); 
-    }
+    for(char i=0;i<4;i++) cin>>time[i], cin.ignore();
+    if(time[0]*60+time[1]<time[2]*60+time[3]) printf("%d",time[2]*60+time[3]-time[0]*60-time[1]);
+    else printf("%d",1440+time[2]*60+time[3]-time[0]*60-time[1]); 
 }
 
 
@@ -566,10 +441,7 @@ int main() {
     int score=0;
     cin>>s;
     transform(s.begin(),s.end(),s.begin(),::toupper);
-    for(int c : s)
-    {
-        score+=(c-64);
-    }
+    for(int c : s) score+=(c-64);
     printf("%d",score);
 }
 
@@ -582,10 +454,7 @@ int main() {
     int score=0;
     cin>>s;
     transform(s.begin(),s.end(),s.begin(),::toupper);
-    for(int c : s)
-    {
-        score+=(c-64);
-    }
+    for(int c : s) score+=(c-64);
     printf("%d",score);
 }
 
@@ -628,19 +497,10 @@ int main()
     };
     cin>>s;
     a=M[s[0]]/10+(M[s[0]]-M[s[0]]/10*10)*9;
-    for(short i=1,j=8;i<9;i++,j--)
-    {
-        a+=(s[i]-48)*j;
-    }
+    for(short i=1,j=8;i<9;i++,j--) a+=(s[i]-48)*j;
     a+=(s[9]-48);
-    if(a%10==0)
-    {
-        cout<<"real";
-    }
-    else
-    {
-        cout<<"fake";
-    }
+    if(a%10==0) cout<<"real";
+    else cout<<"fake";
 }
 
 
@@ -654,12 +514,8 @@ int main()
     getline(cin,a);
     b=a.length();
     for(unsigned int i=0;i<b;i++){
-        if(i%2!=0){
-            cout<<"*";
-        }
-        if(i%2==0){
-            cout<<a[i];
-        }
+        if(i%2!=0) cout<<"*";
+        if(i%2==0) cout<<a[i];
     }
     return 0;
 }
@@ -671,7 +527,6 @@ using namespace std;
 int main() 
 {
     cin.tie(0), cout.tie(0), ios::sync_with_stdio(0);
-
     int o, sum=0;
     while(cin>>o) sum+=abs(o-2), cin.ignore();
     cout<<sum;
@@ -702,7 +557,6 @@ int main()
 {
     string s1, s2;
     getline(cin,s1);
-    
     for(char c: s1) s2.push_back((c+7)%128);
     cout<<s2;
 }
@@ -946,7 +800,28 @@ int r(){
 }
 
 
-7-12(X
+7-12
+#include<bits/stdc++.h> 
+using namespace std; 
+typedef unsigned long long ull;
+ull n, l, arr[50001];
+
+ull cut(int L, int R);
+int main() {
+    cin.tie(0), ios::sync_with_stdio(0);
+    cin>>n>>l;
+    arr[0]=0, arr[n+1]=l;
+    for(int i=1; i<=n; ++i) cin>>arr[i];
+    cout<<cut(0,n+1);
+}
+
+ull cut(int L, int R){
+    if(R-L<=1) return 0;
+    int len=arr[R]-arr[L], mid=(arr[R]+arr[L])/2.0;
+    int i= upper_bound(arr+L,arr+R,mid)-arr;
+    i=(arr[i-1]-arr[L]>=arr[R]-arr[i]? i-1: i);
+    return len+cut(L,i)+cut(i,R);
+}
 
 
 7-13
