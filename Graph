@@ -1,0 +1,58 @@
+import cv2
+import numpy as np
+from math import pi, sin, cos
+
+# Draw a Line by DDA Algorithm
+def line1(img, x1, y1, x2, y2):
+    if abs(x1 - x2) >= abs(y1 - y2):
+        stepNumber = abs(x1 - x2) + 1
+    else: 
+        stepNumber = abs(y1 - y2) + 1
+
+    xStepLen = (x2 - x1) / stepNumber
+    yStepLen = (y2 - y1) / stepNumber
+
+    currentX = x1
+    currentY = y1
+
+    for i in range(stepNumber):
+        currentX = currentX + xStepLen
+        currentY = currentY + yStepLen
+        img[999 - int(currentY)][int(currentX)] = [0, 0, 0]
+
+# Draw a Line by y=a*x+b Function
+def line2(img, x1, y1, x2, y2):
+    slope = (y1 - y2) / (x1 - x2)
+    shift = y1 - x1 * slope 
+
+    for X in range(x1, x2):
+        Y = X * slope + shift
+        img[999 - int(Y)][X] = [0, 0, 0]
+
+# //Error
+# Draw a Circle by Rotation Matrix
+def circle1(img, radius, x, y):
+    Sin = sin(0.01)
+    Cos = cos(0.01)
+    X = radius
+    Y = 0
+
+    theta = 0
+    while theta < 2 * pi:
+        img[int(Y) + y][int(X) + x] = [0, 0, 0]
+
+        X = X * Cos - Y * Sin
+        Y = X * Sin + Y * Cos
+        theta += 0.01
+
+# Draw a Circle by sin and cos Function
+def circle2(img, radius, x, y):
+    theta = 0
+    while theta < 2 * pi:
+        img[999 - int(radius * sin(theta)) - y][int(radius * cos(theta)) + x] = [0, 0, 0]
+        theta += 0.05
+
+# Convert 3D to 2D
+def convert(c, z):
+    return int(c * (1000 / z))
+
