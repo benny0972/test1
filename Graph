@@ -1,10 +1,11 @@
 import cv2
-import numpy as np
+import numpy
+from .Vector import vector
 from typing import Tuple
-from math import pi, sin, cos
+from math import pi, sqrt, sin, cos
 
 # Draw Line by DDA Algorithm
-def line1(img: np.ndarray, p1: Tuple[int, int], p2: Tuple[int, int]):
+def line1(img: numpy.ndarray, p1: Tuple[int, int], p2: Tuple[int, int]) -> None:
     if abs(p1[0] - p2[0]) >= abs(p1[1] - p2[1]):
         stepNumber = abs(p1[0] - p2[0]) + 1
     else: 
@@ -21,17 +22,8 @@ def line1(img: np.ndarray, p1: Tuple[int, int], p2: Tuple[int, int]):
         currentY = currentY + yStepLen
         img[999 - int(currentY)][int(currentX)] = [0, 0, 0]
 
-# Draw Line by Linear Function
-def line2(img: np.ndarray, p1: Tuple[int, int], p2: Tuple[int, int]):
-    slope = (p1[1] - p2[1]) / (p1[0] - p2[0])
-    shift = p1[1] - p1[0] * slope 
-
-    for X in range(p1[0], p2[0]):
-        Y = X * slope + shift
-        img[999 - int(Y)][X] = [0, 0, 0]
-
 # Draw Circle by Trigonometric Function
-def circle1(img: np.ndarray, radius, center: Tuple[int, int]):
+def circle1(img: numpy.ndarray, radius: int, center: Tuple[int, int]) -> None:
     theta = 0
     while theta <= (1 / 2) * pi:
         theta += 0.001
@@ -44,7 +36,7 @@ def circle1(img: np.ndarray, radius, center: Tuple[int, int]):
         img[2 * center[1] - Y][2 * center[0] - X] = [0, 0, 0]
 
 # Draw Solid Circle
-def solid_circle(img: np.ndarray, radius: int, center: Tuple[int, int]):
+def solid_circle(img: numpy.ndarray, radius: int, center: Tuple[int, int]) -> None:
     theta = 0
     while theta <= (1 / 2) * pi:
         theta += 0.001
@@ -60,6 +52,53 @@ def solid_circle(img: np.ndarray, radius: int, center: Tuple[int, int]):
                 img[Y + i][2 * center[0] - X] = [0, 0, 0]
 
         theta += 0.001
+
+class square:
+    def __init__(self, img: numpy.ndarray, length: int, center: Tuple[int, int]):
+        self.img = img
+        self.center = center 
+        self.vertex = ((length / 2, length / 2),
+                       (-length / 2, length / 2),
+                       (-length / 2, -length / 2),
+                       (length / 2, -length / 2))
+
+    def draw(self, theta = None) -> None:
+        if theta == None:
+            Sin = 0
+            Cos = 1
+        else:
+            Sin = sin(theta)
+            Cos = cos(theta)
+
+        for i in range(3, -1, -1):
+            line1(self.img, 
+                 (999 - int(self.vertex[i][0] * Cos - self.vertex[i][1] * Sin) - self.center[1],
+                  int(self.vertex[i][0] * Sin + self.vertex[i][1] * Cos) + self.center[0]),
+                 (999 - int(self.vertex[i-1][0] * Cos - self.vertex[i-1][1] * Sin) - self.center[1],
+                  int(self.vertex[i-1][0] * Sin + self.vertex[i-1][1] * Cos) +self.center[0]))
+
+class triangle:
+    def __init__(self, img: numpy.ndarray, length: int, center: Tuple[int, int]) -> None:
+        self.img = img
+        self.center = center
+        self.vertex = ((0, sqrt(3) / 3 * length),
+                       (-length / 2, -sqrt(3) / 6 * length),
+                       (length / 2, -sqrt(3) / 6 * length))
+
+    def draw(self, theta = None) -> None:
+        if theta == None:
+            Sin = 0
+            Cos = 1
+        else:
+            Sin = sin(theta)
+            Cos = cos(theta)
+
+        for i in range(2, -1, -1):
+            line1(self.img, 
+                 (999 - int(self.vertex[i][0] * Cos - self.vertex[i][1] * Sin) - self.center[1],
+                  int(self.vertex[i][0] * Sin + self.vertex[i][1] * Cos) + self.center[0]),
+                 (999 - int(self.vertex[i-1][0] * Cos - self.vertex[i-1][1] * Sin) - self.center[1],
+                  int(self.vertex[i-1][0] * Sin + self.vertex[i-1][1] * Cos) +self.center[0]))
 
 # Convert 3D to 2D
 def convert(c: int, z: int):
