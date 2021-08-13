@@ -1,0 +1,36 @@
+class vector:
+    def __init__(self, seq) :
+        self.v1 = list(seq)
+        self.dimention = len(seq)
+
+    def __repr__(self):
+        return 'vector('+str(self.v1)+')'
+
+    def __getitem__(self, index):
+        return self.v1[index]
+
+    def __setitem__(self, index, value):
+        self.v1[index] = value
+        
+    def __add__(self, v2):
+        v3 = []
+        for i in range(self.dimention):
+            v3.append(self.v1[i] + v2[i])
+        return vector(v3)
+    
+    def __sub__(self, v2):
+        v3 = []
+        for i in range(self.dimention):
+            v3.append(self.v1[i] - v2[i])
+        return vector(v3)
+
+    def __mul__(self, coefficient):
+        v3 = []
+        for i in range(self.dimention):
+            v3.append(self.v1[i] * coefficient)
+        return vector(v3)
+
+    def __iadd__(self, v2):
+        for i in range(self.dimention):
+            self.v1[i] += v2[i]    
+        return self
